@@ -1,0 +1,137 @@
+package com.mmm.webutility.controller;
+
+
+import java.io.IOException;
+import java.util.Vector;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+//import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mmm.webutility.db.DBManager;
+/**
+ * Servlet implementation class Availability
+ */
+//@WebServlet("/Availability")
+public class Availability extends HttpServlet {
+	private static final long serialVersionUID = 1L; 
+	private DBManager dbManager = DBManager.getInstance();
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Availability() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String databaseResult = "AppwatchFailureAlert";
+		String query = "SELECT TOP(1) UTILITY_ID FROM CDMSDISTR..CDMS_WEB_REF_UTILITIES";
+		Statement stmt = null;
+		ResultSet rs = null;
+		Vector docList = new Vector();
+		//DBConnection.displayDatabaseDetails();
+			Connection con =null;
+			try {
+				con = dbManager.getConnection();
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				
+				//if(con != null && !con.isClosed()){
+					stmt = con.createStatement();
+					stmt.executeQuery(query);
+					rs = stmt.getResultSet();
+					while (rs.next()) {
+						docList.addElement(rs.getString(1));
+					}
+					
+					if (docList.size()> 0 ) {
+						databaseResult = "PASS";
+						request.setAttribute("dbResult", databaseResult);
+						System.out.println("dbResult = "+databaseResult);
+						response.setStatus(200);
+					}
+					else{
+						databaseResult = "FAIL";
+						request.setAttribute("dbResult", databaseResult);
+						response.setStatus(500);
+					}
+		/*//DBConnection.displayDatabaseDetails();
+			Connection con =null;
+			try {
+				con = dbManager.getConnection();
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			Statement stmt = null;
+			ResultSet rs = null;
+			try {
+				
+				if(con != null){
+					databaseResult = "PASS";
+					request.setAttribute("dbResult", databaseResult);
+					System.out.println("dbResult="+databaseResult);
+					response.setStatus(200);
+				}
+				else{
+					databaseResult = "FAIL";
+					request.setAttribute("dbResult", databaseResult);
+					response.setStatus(500);
+				}*/
+				
+			} catch (Throwable e) {
+				System.out.println("availability.jsp: Throwable caught because " + e.toString());
+				e.printStackTrace();
+			} finally {
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException e1) {
+					System.out.println(
+						"availability.jsp: cound not close stmt because "
+							+ e1.toString());
+					e1.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e1) {
+					System.out.println(
+						"availability.jsp: cound not close connection because "
+							+ e1.toString());
+					e1.printStackTrace();
+				}
+			}
+		}
+			
+			request.getRequestDispatcher("/availability.jsp").forward(request, response);
+			
+		
+	}
+	
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+

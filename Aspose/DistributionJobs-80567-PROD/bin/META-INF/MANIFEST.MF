@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.mmm.cdms.distribute.sds.DistributeSDSApplication
+Class-Path: commons-lang3-3.5.jar sqljdbc4.jar log4j-1.2.17.jar jsch-0.1.54.jar mail.jar commons-net-1.4.1.jar iText-2.1.7.jar javax.mail-api-1.5.2.jar fax4j-0.44.2.jar
